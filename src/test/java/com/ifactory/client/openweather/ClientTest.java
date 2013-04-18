@@ -1,5 +1,7 @@
 package com.ifactory.client.openweather;
 
+import java.util.List;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -8,6 +10,10 @@ import junit.framework.TestSuite;
  * Unit test for Client
  */
 public class ClientTest extends TestCase {
+	
+	final double lat = 51.550927;
+	final double lng = -0.180676;
+	
     /**
      * Create the test case
      *
@@ -15,6 +21,7 @@ public class ClientTest extends TestCase {
      */
     public ClientTest(String testName) {
         super(testName);
+                
     }
 
     /**
@@ -29,5 +36,9 @@ public class ClientTest extends TestCase {
      */
     public void testApp() {
         assertTrue(true);
+    }
+    
+    public void testGetSingleWeather() {
+    	
     }
 }
