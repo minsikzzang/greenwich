@@ -17,21 +17,23 @@
  */
 package com.ifactory.client.openweather;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+/**
+ * Constants used on Open Weather map api.
+ * @author minkim
+ *
+ */
+public class OpenWeatherConstants {
+	
+	/**
+	 * Endpoint for API service
+	 */
+	public static final String OPEN_WEATHER_ENDPOINT = 
+			"http://openweathermap.org";
+	
+	/**
+	 * Open Weather API version
+	 */
+	public static final String OPEN_WEATHER_API_VERSION = "2.1";
 
-import static com.ifactory.client.openweather.OpenWeatherConstants.OPEN_WEATHER_ENDPOINT;
-import static com.ifactory.client.openweather.OpenWeatherConstants.OPEN_WEATHER_API_VERSION;
-
-public class Client {
-	public Client() {
-		Result.Builder builder = new Result.Builder();
-		builder.id(1).lat(2.4);
-		Result result = builder.build();
-	}
-
-    public static void main(String[] args) {
-    	
-    }	
+	
 }

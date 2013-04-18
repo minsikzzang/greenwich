@@ -15,9 +15,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-	  <groupId>com.twitter</groupId>
-	  <artifactId>finagle-http_2.9.2</artifactId>
-      <version>6.1.0</version>
+		<groupId>com.ning</groupId>
+		<artifactId>async-http-client</artifactId>
+		<version>1.7.12</version>
 	</dependency>
   </dependencies>
 </project>
