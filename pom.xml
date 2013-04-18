@@ -14,5 +14,10 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+	  <groupId>com.twitter</groupId>
+	  <artifactId>finagle-http_2.9.2</artifactId>
+      <version>6.1.0</version>
+	</dependency>
   </dependencies>
 </project>
