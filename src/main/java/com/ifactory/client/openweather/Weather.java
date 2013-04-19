@@ -2,8 +2,6 @@ package com.ifactory.client.openweather;
 
 import java.io.Serializable;
 
-import com.ifactory.client.openweather.Result.Builder;
-
 public class Weather implements Serializable {
 	
 	private long id;
