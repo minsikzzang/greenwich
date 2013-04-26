@@ -6,7 +6,16 @@
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>open-weather</name>
-  <url>http://maven.apache.org</url>
+  <description>Java library for Open Weather Map service</description>
+  <url>http://maven.apache.org</url>  
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+    
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -20,9 +29,42 @@
       <version>1.7.13</version>
     </dependency>
     <dependency>
-	  <groupId>com.googlecode.json-simple</groupId>
-	  <artifactId>json-simple</artifactId>
-	  <version>1.1.1</version>
+	    <groupId>com.googlecode.json-simple</groupId>
+	    <artifactId>json-simple</artifactId>
+	    <version>1.1.1</version>
     </dependency>
   </dependencies>
+  
+  <build>
+    <finalName>open-weather</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+              <id>copy-dependencies</id>
+              <phase>prepare-package</phase>
+              <goals>
+                  <goal>copy-dependencies</goal>
+              </goals>
+              <configuration>
+                  <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                  <overWriteReleases>false</overWriteReleases>
+                  <overWriteSnapshots>false</overWriteSnapshots>
+                  <overWriteIfNewer>true</overWriteIfNewer>
+              </configuration>
+          </execution>
+        </executions>
+      </plugin>       
+    </plugins>
+  </build>
 </project>
