@@ -4,7 +4,7 @@
   <groupId>com.ifactory.client.openweather</groupId>
   <artifactId>open-weather</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-SNAPSHOT</version>
   <name>open-weather</name>
   <description>Java library for Open Weather Map service</description>
   <url>http://maven.apache.org</url>  
@@ -49,20 +49,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-              <id>copy-dependencies</id>
-              <phase>prepare-package</phase>
-              <goals>
-                  <goal>copy-dependencies</goal>
-              </goals>
-              <configuration>
-                  <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                  <overWriteReleases>false</overWriteReleases>
-                  <overWriteSnapshots>false</overWriteSnapshots>
-                  <overWriteIfNewer>true</overWriteIfNewer>
-              </configuration>
-          </execution>
+        <executions>          
         </executions>
       </plugin>       
     </plugins>
