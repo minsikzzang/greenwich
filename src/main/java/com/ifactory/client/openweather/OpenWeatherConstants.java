@@ -28,12 +28,12 @@ public class OpenWeatherConstants {
 	 * Endpoint for API service
 	 */
 	public static final String OPEN_WEATHER_ENDPOINT = 
-			"http://openweathermap.org";
+			"http://api.openweathermap.org";
 	
 	/**
 	 * Open Weather API version
 	 */
-	public static final String OPEN_WEATHER_API_VERSION = "2.1";
+	public static final String OPEN_WEATHER_API_VERSION = "2.5";
 
 	
 }

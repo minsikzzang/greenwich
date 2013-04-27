@@ -50,94 +50,93 @@ public class Client {
 		return this;
 	}
 	
-	public List<Result> get() throws IOException, InterruptedException, ExecutionException  {
+	@SuppressWarnings("unchecked")
+	public Result get() throws IOException, InterruptedException, ExecutionException  {
 		OpenWeatherUrl url = new OpenWeatherUrl(OPEN_WEATHER_ENDPOINT)
 			.lat(lat)
-			.lng(lng)
-			.cnt(count)
+			.lng(lng)			
 			.version(OPEN_WEATHER_API_VERSION);
 
 		Connection conn = new Connection();
 		String responseBody = conn.get(url);
-		conn.dispose();
 		
 		JSONParser parser = new JSONParser();
 	    JSONObject jsonResponse;
-	    List<Result> multiResult = new ArrayList<Result>();
+	    Result result = null;
 	    
 	    try {
 			jsonResponse = (JSONObject) parser.parse(responseBody);
-			List<Map<String, Object>> results =
-				(List<Map<String, Object>>)jsonResponse.get("list");
-			if (results != null) {
-				for (Map<String, Object> jsonResult: results) {
-					int id = ((Number)jsonResult.get("id")).intValue();
-					long dt = ((Number)jsonResult.get("dt")).longValue();
-					String name = (String)jsonResult.get("name");
-					Map<String, Object> coord =
-						(Map<String, Object>)jsonResult.get("coord");
-					Map<String, Object> main =
-						(Map<String, Object>)jsonResult.get("main");
-					Map<String, Object> wind =
-						(Map<String, Object>)jsonResult.get("wind");
-					Map<String, Object> cloud =
-						(Map<String, Object>)jsonResult.get("cloud");
-					List<Map<String, Object>> weathers =
-					    (List<Map<String, Object>>)jsonResult.get("weather");
+			int id = ((Number)jsonResponse.get("id")).intValue();
+			long dt = ((Number)jsonResponse.get("dt")).longValue();
+			String name = (String)jsonResponse.get("name");
+			Map<String, Object> coord = 
+				(Map<String, Object>)jsonResponse.get("coord");
+			Map<String, Object> main =
+				(Map<String, Object>)jsonResponse.get("main");
+			Map<String, Object> wind =
+				(Map<String, Object>)jsonResponse.get("wind");
+			/*
+			Map<String, Object> cloud =
+				(Map<String, Object>)jsonResponse.get("cloud");
+			Map<String, Object> rain =
+				(Map<String, Object>)jsonResponse.get("rain");
+				*/
+			List<Map<String, Object>> weathers =
+				(List<Map<String, Object>>)jsonResponse.get("weather");
 					
-					Result.Builder builder = new Result.Builder(id, dt, name)
-						.lat(((Number)coord.get("lat")).doubleValue())
-						.lng(((Number)coord.get("lon")).doubleValue())
-						.temp(((Number)main.get("temp")).doubleValue())
-						.pressure(((Number)main.get("pressure")).intValue())
-						.humidity(((Number)main.get("humidity")).intValue())
-						.tempMin(((Number)main.get("temp_min")).doubleValue())
-						.tempMax(((Number)main.get("temp_max")).doubleValue())
-						.windSpeed(((Number)wind.get("speed")).intValue())
-						.windDegree(((Number)wind.get("deg")).intValue());
+			Result.Builder builder = new Result.Builder(id, dt, name)
+				.lat(((Number)coord.get("lat")).doubleValue())
+				.lng(((Number)coord.get("lon")).doubleValue())
+				.temp(((Number)main.get("temp")).doubleValue())
+				.pressure(((Number)main.get("pressure")).intValue())
+				.humidity(((Number)main.get("humidity")).intValue())
+				.tempMin(((Number)main.get("temp_min")).doubleValue())
+				.tempMax(((Number)main.get("temp_max")).doubleValue())
+				.windSpeed(((Number)wind.get("speed")).intValue())
+				.windDegree(((Number)wind.get("deg")).intValue());
 						
-			        for (Map<String, Object> weather: weathers) {
-			        	long wId = ((Number)weather.get("id")).longValue();
-			        	String keyword = (String)weather.get("main");
-			        	Weather w = new Weather.Builder(wId, keyword)
-			        		.description((String)weather.get("description"))
-			        		.icon((String)weather.get("icon"))
-			        		.build();
-			        	builder.addWeather(w);
-			        }
-			        
-			        multiResult.add(builder.build());
-				}
-			}			
+			for (Map<String, Object> weather: weathers) {
+				long wId = ((Number)weather.get("id")).longValue();
+			    String keyword = (String)weather.get("main");
+			    Weather w = new Weather.Builder(wId, keyword)
+			    	.description((String)weather.get("description"))
+			        .icon((String)weather.get("icon"))
+			        .build();
+			    builder.addWeather(w);
+			}
+			result = builder.build();			        							
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-	    
-		return multiResult;
+		
+		return result;
 	}
 			
     public static void main(String[] args) {
     	final double lat = 51.550927;
     	final double lng = -0.180676;
     	
-    	Client c = new Client();    	
-    	try {
-			List<Result> results = c.coordinate(lat, lng).count(1).get();
-			Result result = results.get(0);
-			
-			System.out.println(result.getName() + ": " + result.getTemp() + 
-				" C - " + result.getWeathers().get(0).getDescription() + 
-				", High:" + result.getTempMax() + ", Low: " + 
-				result.getTempMin());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	for (int i = 0; i < 10; ++i) {
+    		Client c = new Client();    	
+        	try {
+        		Result result = c.coordinate(lat, lng).count(1).get();    	
+    			
+    			System.out.println(result.getName() + ": " + result.getTemp() + 
+    				" C - " + result.getWeathers().get(0).getDescription() + 
+    				", High:" + result.getTempMax() + ", Low: " + 
+    				result.getTempMin());
+    				
+    			Thread.sleep(3000);    			
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (InterruptedException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (ExecutionException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    	}    	
     }
 }

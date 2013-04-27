@@ -7,9 +7,11 @@ public class OpenWeatherUrl {
 	private double lat;
 	private double lng;
 	private double cnt;
+	private boolean searchWeather;
 	
 	public OpenWeatherUrl(String url) {
 		this.url = url;
+		this.searchWeather = false;
 	}
 	
 	public OpenWeatherUrl lat(double lat) {
@@ -32,8 +34,16 @@ public class OpenWeatherUrl {
 		return this;
 	}
 	
-	public String toString() {
-		return this.url + "/data/" + version + "/find/city?lat=" + this.lat +
-				"&lon=" + this.lng + "&cnt=" + this.cnt;
+	public void searchWeather() {
+		this.searchWeather = true;
 	}
+	
+	public String toString() {
+		String command = "weather";
+		if (this.searchWeather) {
+			command = "weather";
+		}
+		return this.url + "/data/" + version + "/" + command +"?lat=" + 
+			this.lat + "&lon=" + this.lng;
+	}		
 }
