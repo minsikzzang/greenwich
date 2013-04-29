@@ -61,10 +61,10 @@ public class Client {
 		String responseBody = conn.get(url);
 		
 		JSONParser parser = new JSONParser();
-	    JSONObject jsonResponse;
-	    Result result = null;
+	  JSONObject jsonResponse;
+	  Result result = null;
 	    
-	    try {
+	  try {
 			jsonResponse = (JSONObject) parser.parse(responseBody);
 			int id = ((Number)jsonResponse.get("id")).intValue();
 			long dt = ((Number)jsonResponse.get("dt")).longValue();
@@ -112,31 +112,31 @@ public class Client {
 		return result;
 	}
 			
-    public static void main(String[] args) {
-    	final double lat = 51.550927;
-    	final double lng = -0.180676;
+  public static void main(String[] args) {
+    final double lat = 51.550927;
+    final double lng = -0.180676;
     	
-    	for (int i = 0; i < 10; ++i) {
-    		Client c = new Client();    	
-        	try {
-        		Result result = c.coordinate(lat, lng).count(1).get();    	
+    for (int i = 0; i < 10; ++i) {
+    	Client c = new Client();    	
+      try {
+        Result result = c.coordinate(lat, lng).count(1).get();    	
+    		
+    		System.out.println(result.getName() + ": " + result.getTemp() + 
+    			" C - " + result.getWeathers().get(0).getDescription() + 
+    			", High:" + result.getTempMax() + ", Low: " + 
+    			result.getTempMin());
     			
-    			System.out.println(result.getName() + ": " + result.getTemp() + 
-    				" C - " + result.getWeathers().get(0).getDescription() + 
-    				", High:" + result.getTempMax() + ", Low: " + 
-    				result.getTempMin());
-    				
-    			Thread.sleep(3000);    			
-    		} catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		} catch (InterruptedException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		} catch (ExecutionException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    		}
-    	}    	
-    }
+    		Thread.sleep(3000);    			
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	} catch (InterruptedException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	} catch (ExecutionException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    }    	
+  }
 }
