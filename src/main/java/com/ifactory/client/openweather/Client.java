@@ -35,8 +35,10 @@ public class Client {
 	private double lat;
 	private double lng;
 	private int count;
+	private boolean forecast;
 	
-	public Client() {		
+	public Client() {	
+		this.forecast = false;
 	}
 
 	public Client coordinate(double lat, double lng) {
@@ -45,26 +47,36 @@ public class Client {
 		return this;
 	}	
 	
+	public Client forecast() {
+		this.forecast = true;
+		return this;
+	}	
+	
 	public Client count(int count) {
 		this.count = count;
 		return this;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Result get() throws IOException, InterruptedException, ExecutionException  {
-		OpenWeatherUrl url = new OpenWeatherUrl(OPEN_WEATHER_ENDPOINT)
-			.lat(lat)
-			.lng(lng)			
-			.version(OPEN_WEATHER_API_VERSION);
-
+	private Result getForecast(OpenWeatherUrl url) throws IOException, 
+		InterruptedException, ExecutionException {
 		Connection conn = new Connection();
-		String responseBody = conn.get(url);
+		String responseBody = conn.get(url.forecast());
+		System.out.println(responseBody);
 		
+		// JSONParser parser = new JSONParser();
+		return null;
+	}
+	
+	@SuppressWarnings("unused")
+	private Result getWeather(OpenWeatherUrl url) throws IOException, 
+		InterruptedException, ExecutionException {
+		Connection conn = new Connection();
+		String responseBody = conn.get(url.weather());
+	
 		JSONParser parser = new JSONParser();
-	  JSONObject jsonResponse;
-	  Result result = null;
-	    
-	  try {
+		JSONObject jsonResponse;
+		Result result = null;
+		try {
 			jsonResponse = (JSONObject) parser.parse(responseBody);
 			int id = ((Number)jsonResponse.get("id")).intValue();
 			long dt = ((Number)jsonResponse.get("dt")).longValue();
@@ -108,7 +120,32 @@ public class Client {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+		return result;
+	}
+	
+	public Result get() {
+		OpenWeatherUrl url = new OpenWeatherUrl(OPEN_WEATHER_ENDPOINT)
+			.lat(lat)
+			.lng(lng)			
+			.version(OPEN_WEATHER_API_VERSION);
+
+		Result result = null;		
+		try {
+			if (this.forecast) {	
+				result = getForecast(url.cnt(this.count));
+			} else {
+				result = getWeather(url);
+			}		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return result;
 	}
 			
@@ -116,6 +153,10 @@ public class Client {
     final double lat = 51.550927;
     final double lng = -0.180676;
     	
+    Client c = new Client();    
+    c.coordinate(lat, lng).count(5).forecast().get();
+    
+    /*
     for (int i = 0; i < 10; ++i) {
     	Client c = new Client();    	
       try {
@@ -137,6 +178,7 @@ public class Client {
     		// TODO Auto-generated catch block
     		e.printStackTrace();
     	}
-    }    	
+    }   
+    */ 	
   }
 }

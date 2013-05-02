@@ -6,12 +6,15 @@ public class OpenWeatherUrl {
 	private String version;
 	private double lat;
 	private double lng;
-	private double cnt;
-	private boolean searchWeather;
+	private int cnt;
+	private boolean weather;
+	private boolean forecast;
 	
 	public OpenWeatherUrl(String url) {
 		this.url = url;
-		this.searchWeather = false;
+		this.weather = false;
+		this.forecast = false;
+		this.cnt = 0;
 	}
 	
 	public OpenWeatherUrl lat(double lat) {
@@ -24,7 +27,7 @@ public class OpenWeatherUrl {
 		return this;
 	}
 	
-	public OpenWeatherUrl cnt(double cnt) {
+	public OpenWeatherUrl cnt(int cnt) {
 		this.cnt = cnt;
 		return this;
 	}
@@ -34,16 +37,25 @@ public class OpenWeatherUrl {
 		return this;
 	}
 	
-	public void searchWeather() {
-		this.searchWeather = true;
+	public OpenWeatherUrl weather() {
+		this.weather = true;
+		return this;
 	}
 	
+	public OpenWeatherUrl forecast() {
+		this.forecast = true;
+		return this;
+	}
+
 	public String toString() {
 		String command = "weather";
-		if (this.searchWeather) {
+		if (this.weather) {
 			command = "weather";
-		}
+		} else if (this.forecast) {
+		  command = "forecast/daily";
+		}		
 		return this.url + "/data/" + version + "/" + command +"?lat=" + 
-			this.lat + "&lon=" + this.lng;
+  			this.lat + "&lon=" + this.lng + "&mode=json" + 
+  			(this.cnt > 0 ? ("&cnt=" + Integer.toString(this.cnt)) : "");
 	}		
 }

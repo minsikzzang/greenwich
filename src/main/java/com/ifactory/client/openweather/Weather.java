@@ -10,8 +10,8 @@ public class Weather implements Serializable {
 	private String icon;
 	
 	static final class Builder {
-		/**
-		Thunderstorm
+	/**
+	Thunderstorm
     ID	Meaning	Icon
     200	 thunderstorm with light rain	 [[file:11d.png]]
     201	 thunderstorm with rain	 [[file:11d.png]]
@@ -73,7 +73,7 @@ public class Weather implements Serializable {
     904	 hot
     905	 windy
     906	 hail    
-		*/
+	*/
 		private long id;
 		private String keyword;
 		private String description;
