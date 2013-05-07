@@ -1,4 +1,4 @@
-# Open weather
+# Greenwich
 **Open Weather Map Java client**
 
 Free Weather API client (http://openweathermap.org/)
