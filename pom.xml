@@ -51,7 +51,27 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>          
         </executions>
-      </plugin>       
+      </plugin>      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>  
+          <execution>  
+            <phase>test</phase>  
+            <goals>  
+              <goal>java</goal>  
+            </goals>  
+            <configuration>  
+              <mainClass>com.ifactory.client.openweather.Client</mainClass>  
+              <arguments>  
+                <argument>51.550927</argument>
+                <argument>-0.180676</argument>
+              </arguments>  
+            </configuration>  
+          </execution>  
+        </executions>          
+      </plugin> 
     </plugins>
   </build>
 </project>

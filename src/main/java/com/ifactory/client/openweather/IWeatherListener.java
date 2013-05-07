@@ -17,7 +17,13 @@
  */
 package com.ifactory.client.openweather;
 
-public interface IDisposable {
+import java.util.List;
 
-	void dispose();
+public interface IWeatherListener {
+
+	public void onForecast(List<Result> forecast);
+	
+	public void onWeather(Result weather);
+	
+	public void onError();
 }

@@ -52,12 +52,17 @@ public class Client {
 		return this;
 	}	
 	
+	public Client weather() {
+		this.forecast = false;
+		return this;
+	}
+	
 	public Client count(int count) {
 		this.count = count;
 		return this;
 	}
 	
-	private Result getForecast(OpenWeatherUrl url) throws IOException, 
+	private List<Result> getForecast(OpenWeatherUrl url) throws IOException, 
 		InterruptedException, ExecutionException {
 		Connection conn = new Connection();
 		String responseBody = conn.get(url.forecast());
@@ -67,7 +72,6 @@ public class Client {
 		return null;
 	}
 	
-	@SuppressWarnings("unused")
 	private Result getWeather(OpenWeatherUrl url) throws IOException, 
 		InterruptedException, ExecutionException {
 		Connection conn = new Connection();
@@ -119,66 +123,66 @@ public class Client {
 			result = builder.build();			        							
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
+		}		
 		return result;
 	}
 	
-	public Result get() {
+	public void get(IWeatherListener listener) {
 		OpenWeatherUrl url = new OpenWeatherUrl(OPEN_WEATHER_ENDPOINT)
 			.lat(lat)
 			.lng(lng)			
 			.version(OPEN_WEATHER_API_VERSION);
 
-		Result result = null;		
 		try {
 			if (this.forecast) {	
-				result = getForecast(url.cnt(this.count));
+				listener.onForecast(getForecast(url.cnt(this.count)));
 			} else {
-				result = getWeather(url);
+				listener.onWeather(getWeather(url));
 			}		
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			listener.onError();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			listener.onError();
 		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return result;
-	}
-			
+			listener.onError();
+		}		
+	}	
+	
   public static void main(String[] args) {
-    final double lat = 51.550927;
-    final double lng = -0.180676;
-    	
-    Client c = new Client();    
-    c.coordinate(lat, lng).count(5).forecast().get();
     
-    /*
-    for (int i = 0; i < 10; ++i) {
-    	Client c = new Client();    	
-      try {
-        Result result = c.coordinate(lat, lng).count(1).get();    	
-    		
-    		System.out.println(result.getName() + ": " + result.getTemp() + 
-    			" C - " + result.getWeathers().get(0).getDescription() + 
-    			", High:" + result.getTempMax() + ", Low: " + 
-    			result.getTempMin());
-    			
-    		Thread.sleep(3000);    			
-    	} catch (IOException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	} catch (InterruptedException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
-    	} catch (ExecutionException e) {
-    		// TODO Auto-generated catch block
-    		e.printStackTrace();
+    class Listener implements IWeatherListener {
+  	  
+  	  public void onForecast(List<Result> forecast) {
+
+  	  }
+
+    	public void onWeather(Result weather) {
+        System.out.println(weather.getName() + ": " + weather.getTemp() + 
+    			" C - " + weather.getWeathers().get(0).getDescription() + 
+    			", High:" + weather.getTempMax() + ", Low: " + 
+    			weather.getTempMin());
     	}
-    }   
-    */ 	
+    	
+    	public void onError() {
+    	  
+    	}
+  	}
+    
+    if (args.length < 2) {
+      System.out.println("Latitude and Longitude are required!!!");
+      return;
+    }
+      
+    final double lat = Double.parseDouble(args[0]);
+    final double lng = Double.parseDouble(args[1]);
+    	
+    Listener l = new Listener();
+    
+    Client c = new Client();    
+    c.coordinate(lat, lng).count(5).forecast().get(l);           
+    c.coordinate(lat, lng).weather().get(l);           
   }
 }
