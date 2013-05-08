@@ -19,5 +19,5 @@ package com.ifactory.client.greenwich;
 
 public interface IDisposable {
 
-	void dispose();
+	void close();
 }

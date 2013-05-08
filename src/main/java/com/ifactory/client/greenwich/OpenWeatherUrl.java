@@ -26,12 +26,14 @@ public class OpenWeatherUrl {
 	private int cnt;
 	private boolean weather;
 	private boolean forecast;
+	private boolean hourly;
 	
 	public OpenWeatherUrl(String url) {
 		this.url = url;
 		this.weather = false;
 		this.forecast = false;
 		this.cnt = 0;
+		this.hourly = false;
 	}
 	
 	public OpenWeatherUrl lat(double lat) {
@@ -63,13 +65,22 @@ public class OpenWeatherUrl {
 		this.forecast = true;
 		return this;
 	}
+	
+	public OpenWeatherUrl hourly() {
+	  this.hourly = true;
+	  return this;
+	}
 
+  public boolean getHourly() {
+    return this.hourly;
+  }
+  
 	public String toString() {
 		String command = "weather";
 		if (this.weather) {
 			command = "weather";
 		} else if (this.forecast) {
-		  command = "forecast/daily";
+		  command = "forecast" + (this.hourly != true ? "/daily" : "");
 		}		
 		return this.url + "/data/" + version + "/" + command +"?lat=" + 
   			this.lat + "&lon=" + this.lng + "&mode=json" + 

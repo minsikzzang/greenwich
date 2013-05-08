@@ -21,9 +21,9 @@ import java.util.List;
 
 public interface IWeatherListener {
 
-	public void onForecast(List<Result> forecast);
+	public void onForecast(List<Result> forecast, Connection conn);
 	
-	public void onWeather(Result weather);
+	public void onWeather(Result weather, Connection conn);
 	
 	public void onError();
 }

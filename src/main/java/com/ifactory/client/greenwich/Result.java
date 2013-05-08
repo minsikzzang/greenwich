@@ -28,15 +28,10 @@ public class Result implements Serializable {
 	private double lat;
 	private double lng;
 	private String name;
-	private double temp;
-	private int pressure;
-	private int humidity;
-	private double tempMax;
-	private double tempMin;
+	private Main main;
 	private List<Weather> weathers;
 	private int windSpeed;
 	private int windDegree;
-	static double KELVIN = 273.15;
 	
 	static final class Builder {
 		
@@ -46,18 +41,10 @@ public class Result implements Serializable {
 		private double lat;
 		private double lng;
 		private String name;
-		/**
-		 * Temperature in Kelvin. Subtracted 273.15 from this figure to convert 
-		 * to Celsius.
-		 */
-		private double temp;
-		private int pressure;
-		private int humidity;
-		private double tempMax;
-		private double tempMin;
 		private int windSpeed;
 		private int windDegree;
-
+    private Main main;
+    
 		public Builder(long id, long timestamp, String name) {
 			this.id = id;
 			this.timestamp = timestamp;
@@ -73,32 +60,7 @@ public class Result implements Serializable {
 			this.lat = lat;
 			return this;
 		}
-		
-		public Builder temp(double temp) {
-			this.temp = temp;
-			return this;
-		}
-		
-		public Builder pressure(int pressure) {
-			this.pressure = pressure;
-			return this;
-		}
-		
-		public Builder humidity(int humidity) {
-			this.humidity = humidity;
-			return this;
-		}
-		
-		public Builder tempMax(double tempMax) {
-			this.tempMax = tempMax;
-			return this;
-		}
-		
-		public Builder tempMin(double tempMin) {
-			this.tempMin = tempMin;
-			return this;
-		}
-		
+								
 		public Builder windSpeed(int windSpeed) {
 			this.windSpeed = windSpeed;
 			return this;
@@ -113,6 +75,11 @@ public class Result implements Serializable {
 			weathers.add(weather);
 		}
 		
+		public Builder main(Main main) {
+		  this.main = main;
+		  return this;
+		}
+		
 		public Result build() {
 			return new Result(this);
 		}
@@ -124,14 +91,10 @@ public class Result implements Serializable {
 		name = builder.name;
 		lng = builder.lng;
 		lat = builder.lat;
-		temp = builder.temp;
-		pressure = builder.pressure;
-		humidity = builder.humidity;
-		tempMax = builder.tempMax;
-		tempMin = builder.tempMin;
 		windSpeed = builder.windSpeed;
 		windDegree = builder.windDegree;		
 		weathers = builder.weathers;
+		main = builder.main;
 	}	
 	
 	public long getId() {
@@ -154,26 +117,6 @@ public class Result implements Serializable {
 		return lat;
 	}
 	
-	public double getTemp() {
-		return temp - KELVIN;
-	}
-
-	public int getPressure() {
-		return pressure;
-	}
-
-	public int getHumidity() {
-		return humidity;
-	}
-
-	public double getTempMax() {
-		return tempMax - KELVIN;
-	}
-
-	public double getTempMin() {
-		return tempMin - KELVIN;
-	}
-
 	public int getWindSpeed() {
 		return windSpeed;
 	}
@@ -182,6 +125,10 @@ public class Result implements Serializable {
 		return windDegree;
 	}	
 
+  public Main getMain() {
+    return main;
+  }
+  
 	public List<Weather> getWeathers() {
 		return weathers;
 	}	

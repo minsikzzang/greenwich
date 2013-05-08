@@ -24,11 +24,15 @@ import java.util.concurrent.Future;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
-public class Connection {
+public class Connection implements IDisposable {
 	private AsyncHttpClient client = new AsyncHttpClient();
 	
 	public Connection() {
 		
+	}
+	
+	public void close() {
+	  client.close();
 	}
 	
 	public String get(OpenWeatherUrl url) throws IOException, 
