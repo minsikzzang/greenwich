@@ -66,8 +66,8 @@ public class OpenWeatherUrl {
 		return this;
 	}
 	
-	public OpenWeatherUrl hourly() {
-	  this.hourly = true;
+	public OpenWeatherUrl hourly(boolean hourly) {
+	  this.hourly = hourly;
 	  return this;
 	}
 

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.Serializable;
 
-public class DailyForecast implements Serializable {
+public class Forecast implements Serializable {
 
 	private List<Weather> weathers;
 	private long timestamp;
@@ -32,9 +32,6 @@ public class DailyForecast implements Serializable {
 	static final class Builder {
   	private List<Weather> weathers = new ArrayList<Weather>();	
   	private long timestamp;
-  	private int humidity;
-  	private double pressure;
-		private Temp temp;
 		
 		public Builder(long timestamp) {
 			this.timestamp = timestamp;			
@@ -43,33 +40,15 @@ public class DailyForecast implements Serializable {
 		public void addWeather(Weather weather) {
 			weathers.add(weather);
 		}
-		
-		public Builder humidity(int humidity) {
-		  this.humidity = humidity;
-		  return this;
-		}
-
-		public Builder pressure(double pressure) {
-		  this.pressure = pressure;
-		  return this;
-		}
-		
-		public Builder temp(Temp temp) {
-		  this.temp = temp;
-		  return this;
-		}
-    
-		public DailyForecast build() {
-			return new DailyForecast(this);
+		    
+		public Forecast build() {
+			return new Forecast(this);
 		}
 	}
 	
-	private DailyForecast(Builder builder) {
+	private Forecast(Builder builder) {
 		timestamp = builder.timestamp;
 		weathers = builder.weathers;
-		humidity = builder.humidity;
-		pressure = builder.pressure;
-		temp = builder.temp;
 	}	
 	
 	public long getTimestamp() {
@@ -78,17 +57,5 @@ public class DailyForecast implements Serializable {
 	
 	public List<Weather> getWeathers() {
 		return weathers;
-	}
-	
-	public double getPressure() {
-		return pressure;
-	}
-	
-	public int getHumidity() {
-		return humidity;
-	}
-	
-	public Temp getTemp() {
-	  return temp;
 	}
 }

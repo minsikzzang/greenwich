@@ -19,6 +19,8 @@ package com.ifactory.client.greenwich;
 
 import java.io.Serializable;
 
+import static com.ifactory.client.greenwich.Temp.KELVIN;
+
 public class Main implements Serializable {
   private double temp;
 	private int humidity;
@@ -27,11 +29,6 @@ public class Main implements Serializable {
 	private double tempMin;
   private double seaLevel;
 	private double groundLevel;
-	/**
-	 * Temperature in Kelvin. Subtracted 273.15 from this figure to convert 
-	 * to Celsius.
-	 */
-	static double KELVIN = 273.15;
 	
 	static final class Builder {
     private double temp;
@@ -48,7 +45,7 @@ public class Main implements Serializable {
 			this.tempMax = tempMax;
 		}
 
-		public Builder pressure(int pressure) {
+		public Builder pressure(double pressure) {
 			this.pressure = pressure;
 			return this;
 		}
