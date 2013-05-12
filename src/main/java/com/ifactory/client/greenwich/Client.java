@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -67,14 +69,74 @@ public class Client {
 		return this;
 	}
 	
-	private List<Result> getForecast(OpenWeatherUrl url) throws IOException, 
+	private ForecastResult getDailyForecast(OpenWeatherUrl url)  throws IOException,
+	  InterruptedException, ExecutionException {		
+	  String responseBody = conn.get(url);    
+  	JSONParser parser = new JSONParser();
+  	JSONObject jsonResponse;
+  	ForecastResult result = null;
+  	try {
+  		jsonResponse = (JSONObject)parser.parse(responseBody);
+  		Map<String, Object> city = (Map<String, Object>)jsonResponse.get("city");
+  		int id = ((Number)city.get("id")).intValue();
+  		String name = (String)city.get("name");
+  		Map<String, Object> coord = (Map<String, Object>)city.get("coord");			
+  		List<Map<String, Object>> list = 
+  		  (List<Map<String, Object>>)jsonResponse.get("list");
+    	ForecastResult.Builder builder = new ForecastResult.Builder(id, name)
+  			.lat(((Number)coord.get("lat")).doubleValue())
+  			.lng(((Number)coord.get("lon")).doubleValue());
+  	
+  		for (Map<String, Object> fc: list) {
+  		  long timestamp = ((Number)fc.get("dt")).longValue();    
+  		  List<Weather> weathers = new ArrayList<Weather>();	
+    
+  		  for (Map<String, Object> weather: 
+  		      (List<Map<String, Object>>)fc.get("weather")) {
+    			long wId = ((Number)weather.get("id")).longValue();
+    		    String keyword = (String)weather.get("main");
+    		    Weather w = new Weather.Builder(wId, keyword)
+    		    	.description((String)weather.get("description"))
+    		        .icon((String)weather.get("icon"))
+    		        .build();
+    		    weathers.add(w);
+    		}
+    
+  		  Map<String, Object> t = (Map<String, Object>)fc.get("temp");
+        Temp temp = 
+          new Temp.Builder(((Number)t.get("day")).doubleValue(),
+                           ((Number)t.get("min")).doubleValue(),
+                           ((Number)t.get("max")).doubleValue())
+                           .night(((Number)t.get("night")).doubleValue())
+                           .evening(((Number)t.get("eve")).doubleValue())
+                           .morning(((Number)t.get("morn")).doubleValue())
+                           .build();
+        DailyForecast.Builder dailyBuilder = 
+          new DailyForecast.Builder(timestamp)
+            .humidity(((Number)fc.get("humidity")).intValue())
+            .pressure(((Number)fc.get("pressure")).doubleValue())
+            .temp(temp);  
+        
+        for (Weather w: weathers) {
+          dailyBuilder.addWeather(w);
+        }  
+        builder.addDaily(dailyBuilder.build());		          
+      }
+
+  		result = builder.build();			        							
+  	} catch (ParseException e) {
+  		e.printStackTrace();
+  	}				
+    
+  	return result;
+  }
+  
+	private ForecastResult getHourlyForecast(OpenWeatherUrl url) throws IOException, 
 		InterruptedException, ExecutionException {		
-		String responseBody = conn.get(url.forecast());
-		// System.out.println(responseBody);
-		
+		String responseBody = conn.get(url);
 		JSONParser parser = new JSONParser();
 		JSONObject jsonResponse;
-		Result result = null;
+		ForecastResult result = null;
 		try {
 			jsonResponse = (JSONObject)parser.parse(responseBody);
 			Map<String, Object> city = (Map<String, Object>)jsonResponse.get("city");
@@ -83,7 +145,10 @@ public class Client {
 			Map<String, Object> coord = (Map<String, Object>)city.get("coord");			
 			List<Map<String, Object>> list = 
 			  (List<Map<String, Object>>)jsonResponse.get("list");
-			
+			ForecastResult.Builder builder = new ForecastResult.Builder(id, name)
+  			.lat(((Number)coord.get("lat")).doubleValue())
+  			.lng(((Number)coord.get("lon")).doubleValue());
+      
 			for (Map<String, Object> fc: list) {
 			  long timestamp = ((Number)fc.get("dt")).longValue();
 			  
@@ -100,60 +165,34 @@ public class Client {
   			    weathers.add(w);
   			}
   			
-			  if (url.getHourly()) {
-			    Map<String, Object> m = (Map<String, Object>)fc.get("main");
-          Main mo = 
-            new Main.Builder(((Number)m.get("temp")).doubleValue(),
-                             ((Number)m.get("temp_min")).doubleValue(),
-                             ((Number)m.get("temp_max")).doubleValue())
-                             .pressure(((Number)m.get("pressure")).doubleValue())
-                             .humidity(((Number)m.get("humidity")).intValue())
-                             .build();
-          HourlyForecast.Builder builder = 
-            new HourlyForecast.Builder(timestamp).main(mo);
-            
-          for (Weather w: weathers) {
-            builder.addWeather(w);
-          }
-        } else {
-          Map<String, Object> t = (Map<String, Object>)fc.get("temp");
-          Temp temp = 
-            new Temp.Builder(((Number)t.get("day")).doubleValue(),
-                             ((Number)t.get("min")).doubleValue(),
-                             ((Number)t.get("max")).doubleValue())
-                             .night(((Number)t.get("night")).doubleValue())
-                             .evening(((Number)t.get("eve")).doubleValue())
-                             .morning(((Number)t.get("morn")).doubleValue())
-                             .build();
-          DailyForecast.Builder builder = 
-            new DailyForecast.Builder(timestamp)
-              .humidity(((Number)fc.get("humidity")).intValue())
-              .pressure(((Number)fc.get("pressure")).doubleValue())
-              .temp(temp);  
-              
-          for (Weather w: weathers) {
-            builder.addWeather(w);
-          }  		  
+			  Map<String, Object> m = (Map<String, Object>)fc.get("main");
+        Main mo = 
+          new Main.Builder(((Number)m.get("temp")).doubleValue(),
+                           ((Number)m.get("temp_min")).doubleValue(),
+                           ((Number)m.get("temp_max")).doubleValue())
+                           .pressure(((Number)m.get("pressure")).doubleValue())
+                           .humidity(((Number)m.get("humidity")).intValue())
+                           .build();
+        HourlyForecast.Builder hourlyBuilder = 
+          new HourlyForecast.Builder(timestamp).main(mo);
+          
+        for (Weather w: weathers) {
+          hourlyBuilder.addWeather(w);
         }
+                        
+        builder.addHourly(hourlyBuilder.build());        
       }
-				/*
-			Result.Builder builder = new Result.Builder(id, dt, name)
-				.lat(((Number)coord.get("lat")).doubleValue())
-				.lng(((Number)coord.get("lon")).doubleValue())
-				.windSpeed(((Number)wind.get("speed")).intValue())
-				.windDegree(((Number)wind.get("deg")).intValue())
-				.main(mainTemp);						
-			*/			        							
+      result = builder.build();	
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}				
  
-		return null;
+		return result;
 	}
 	
 	private Result getWeather(OpenWeatherUrl url) throws IOException, 
 		InterruptedException, ExecutionException {
-		String responseBody = conn.get(url.weather());
+		String responseBody = conn.get(url);
 	  // System.out.println(responseBody);
 	  
 		JSONParser parser = new JSONParser();
@@ -211,18 +250,25 @@ public class Client {
 	}
 	
 	public void get(IWeatherListener listener) {
-		OpenWeatherUrl url = new OpenWeatherUrl(OPEN_WEATHER_ENDPOINT)
-			.lat(lat)
-			.lng(lng)			
-			.version(OPEN_WEATHER_API_VERSION);
+		OpenWeatherUrl.Builder builder = 
+		  new OpenWeatherUrl.Builder(OPEN_WEATHER_ENDPOINT)
+			  .lat(lat)
+			  .lng(lng)			
+			  .version(OPEN_WEATHER_API_VERSION);
 
 		try {
 			if (this.forecast) {	
-				listener.onForecast(
-				  getForecast(url.hourly(this.hourly).cnt(this.count)), 
-				  conn);
+			  builder = builder.cnt(this.count).hourly(this.hourly).forecast();
+			  if (this.hourly) {
+			    listener.onHourlyForecast(getHourlyForecast(builder.build()), 
+			                                                conn);  
+			  } else {
+			    listener.onDailyForecast(getDailyForecast(builder.build()), 
+			                                              conn);  
+			  }				
 			} else {
-				listener.onWeather(getWeather(url), conn);
+			  builder = builder.weather();
+				listener.onWeather(getWeather(builder.build()), conn);
 			}		
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -240,9 +286,28 @@ public class Client {
     
     class Listener implements IWeatherListener {
   	  
-  	  public void onForecast(List<Result> forecasts, Connection conn) {
+  	  public void onDailyForecast(ForecastResult forecast, Connection conn) {
+  	    System.out.println(forecast.getName() + ", count: " + 
+  	      forecast.getDaily().size());
+  	    for (DailyForecast f: forecast.getDaily()) {
+  	      SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
+  	      System.out.println(sdf.format(new Date(f.getTimestamp() * 1000)) + 
+  	        " - day:" + f.getTemp().getDay() + ", High:" + f.getTemp().getMax() + 
+  	        ", Low:" + f.getTemp().getMin());
+	      }
   	  }
 
+      public void onHourlyForecast(ForecastResult forecast, Connection conn) {
+        System.out.println(forecast.getName() + ", count: " + 
+  	      forecast.getHourly().size());      
+  	    for (HourlyForecast f: forecast.getHourly()) {
+  	      SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy 'at' h:mm a");
+  	      System.out.println(sdf.format(new Date(f.getTimestamp() * 1000)) + 
+  	        " - day:" + f.getMain().getTemp() + ", High:" + f.getMain().getTempMax() + 
+  	        ", Low:" + f.getMain().getTempMin());
+	      }    
+  	  }
+  	  
     	public void onWeather(Result weather, Connection conn) {
         System.out.println(weather.getName() + ": " + weather.getMain().getTemp() + 
     			" C - " + weather.getWeathers().get(0).getDescription() + 
@@ -268,7 +333,7 @@ public class Client {
     Listener l = new Listener();    
     Client c = new Client();    
     c.coordinate(lat, lng).count(2).forecast(true).get(l);           
-    c.coordinate(lat, lng).count(2).forecast(false).get(l);           
+    c.coordinate(lat, lng).count(5).forecast(false).get(l);           
     c.coordinate(lat, lng).weather().get(l);          
   }
 }

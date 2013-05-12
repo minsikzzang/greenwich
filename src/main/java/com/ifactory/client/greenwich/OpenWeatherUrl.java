@@ -28,48 +28,74 @@ public class OpenWeatherUrl {
 	private boolean forecast;
 	private boolean hourly;
 	
-	public OpenWeatherUrl(String url) {
-		this.url = url;
-		this.weather = false;
-		this.forecast = false;
-		this.cnt = 0;
-		this.hourly = false;
+	static final class Builder {
+    private String url;
+  	private String version;
+  	private double lat;
+  	private double lng;
+  	private int cnt;
+  	private boolean weather;
+  	private boolean forecast;
+  	private boolean hourly;
+		
+		public Builder(String url) {
+			this.url = url;
+  		this.weather = false;
+  		this.forecast = false;
+  		this.cnt = 0;
+  		this.hourly = false;
+		}
+
+		public Builder lat(double lat) {
+  		this.lat = lat;
+  		return this;
+  	}
+
+  	public Builder lng(double lng) {
+  		this.lng = lng;
+  		return this;
+  	}
+
+  	public Builder cnt(int cnt) {
+  		this.cnt = cnt;
+  		return this;
+  	}
+
+  	public Builder version(String version) {
+  		this.version = version;
+  		return this;
+  	}
+
+  	public Builder weather() {
+  		this.weather = true;
+  		return this;
+  	}
+
+  	public Builder forecast() {
+  		this.forecast = true;
+  		return this;
+  	}
+
+  	public Builder hourly(boolean hourly) {
+  	  this.hourly = hourly;
+  	  return this;
+  	}
+				
+		public OpenWeatherUrl build() {
+			return new OpenWeatherUrl(this);
+		}
 	}
 	
-	public OpenWeatherUrl lat(double lat) {
-		this.lat = lat;
-		return this;
-	}
-	
-	public OpenWeatherUrl lng(double lng) {
-		this.lng = lng;
-		return this;
-	}
-	
-	public OpenWeatherUrl cnt(int cnt) {
-		this.cnt = cnt;
-		return this;
-	}
-	
-	public OpenWeatherUrl version(String version) {
-		this.version = version;
-		return this;
-	}
-	
-	public OpenWeatherUrl weather() {
-		this.weather = true;
-		return this;
-	}
-	
-	public OpenWeatherUrl forecast() {
-		this.forecast = true;
-		return this;
-	}
-	
-	public OpenWeatherUrl hourly(boolean hourly) {
-	  this.hourly = hourly;
-	  return this;
-	}
+	private OpenWeatherUrl(Builder builder) {
+		url = builder.url;
+  	version = builder.version;
+  	lat = builder.lat;
+  	lng = builder.lng;
+  	cnt = builder.cnt;
+  	weather = builder.weather;
+  	forecast = builder.forecast;
+  	hourly = builder.hourly;
+	}		
 
   public boolean getHourly() {
     return this.hourly;
