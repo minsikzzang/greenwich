@@ -20,6 +20,7 @@ package com.ifactory.client.greenwich;
 import java.io.Serializable;
 
 import static com.ifactory.client.greenwich.Temp.KELVIN;
+import static com.ifactory.client.greenwich.Temp.roundUp;
 
 public class Main implements Serializable {
   private double temp;
@@ -81,15 +82,15 @@ public class Main implements Serializable {
 	}	
 	
 	public double getTemp() {
-		return temp - KELVIN;
+		return roundUp(temp - KELVIN);
 	}
 	
 	public double getTempMax() {
-		return tempMax - KELVIN;
+		return roundUp(tempMax - KELVIN);
 	}
 
 	public double getTempMin() {
-		return tempMin - KELVIN;
+		return roundUp(tempMin - KELVIN);
 	}
 	
 	public double getPressure() {

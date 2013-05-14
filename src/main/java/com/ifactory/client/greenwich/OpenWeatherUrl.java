@@ -21,6 +21,7 @@ public class OpenWeatherUrl {
 	
 	private String url;
 	private String version;
+	private String apiKey;
 	private double lat;
 	private double lng;
 	private int cnt;
@@ -31,6 +32,7 @@ public class OpenWeatherUrl {
 	static final class Builder {
     private String url;
   	private String version;
+  	private String apiKey;
   	private double lat;
   	private double lng;
   	private int cnt;
@@ -38,12 +40,13 @@ public class OpenWeatherUrl {
   	private boolean forecast;
   	private boolean hourly;
 		
-		public Builder(String url) {
+		public Builder(String url, String apiKey) {
 			this.url = url;
   		this.weather = false;
   		this.forecast = false;
   		this.cnt = 0;
   		this.hourly = false;
+  		this.apiKey = apiKey;
 		}
 
 		public Builder lat(double lat) {
@@ -95,6 +98,7 @@ public class OpenWeatherUrl {
   	weather = builder.weather;
   	forecast = builder.forecast;
   	hourly = builder.hourly;
+  	apiKey = builder.apiKey;
 	}		
 
   public boolean getHourly() {
@@ -102,14 +106,17 @@ public class OpenWeatherUrl {
   }
   
 	public String toString() {
-		String command = "weather";
+		StringBuilder builder = new StringBuilder(this.url).append("/data/")
+		  .append(version).append("/");
 		if (this.weather) {
-			command = "weather";
+			builder.append("weather");
 		} else if (this.forecast) {
-		  command = "forecast" + (this.hourly != true ? "/daily" : "");
+		  builder.append("forecast")
+		    .append(this.hourly != true ? "/daily" : "");
 		}		
-		return this.url + "/data/" + version + "/" + command +"?lat=" + 
-  			this.lat + "&lon=" + this.lng + "&mode=json" + 
-  			(this.cnt > 0 ? ("&cnt=" + Integer.toString(this.cnt)) : "");
+		return builder.append("?lat=").append(this.lat).append("&lon=")
+		  .append(this.lng).append("&mode=json")
+		    .append((this.cnt > 0 ? ("&cnt=" + Integer.toString(this.cnt)) : ""))
+		      .append("&APPID=").append(this.apiKey).toString();
 	}		
 }

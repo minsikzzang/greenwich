@@ -35,5 +35,8 @@ public class OpenWeatherConstants {
 	 */
 	public static final String OPEN_WEATHER_API_VERSION = "2.5";
 
-	
+  /**
+   * Open Weather API key
+   */
+  public static final String OPEN_WEATHER_API_KEY = "c25ebaf1870ad5a930fcdfb4a7dee2f4";	
 }

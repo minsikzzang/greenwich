@@ -31,6 +31,7 @@ import org.json.simple.parser.ParseException;
 
 import static com.ifactory.client.greenwich.OpenWeatherConstants.OPEN_WEATHER_ENDPOINT;
 import static com.ifactory.client.greenwich.OpenWeatherConstants.OPEN_WEATHER_API_VERSION;
+import static com.ifactory.client.greenwich.OpenWeatherConstants.OPEN_WEATHER_API_KEY;
 
 public class Client {
 	
@@ -251,7 +252,7 @@ public class Client {
 	
 	public void get(IWeatherListener listener) {
 		OpenWeatherUrl.Builder builder = 
-		  new OpenWeatherUrl.Builder(OPEN_WEATHER_ENDPOINT)
+		  new OpenWeatherUrl.Builder(OPEN_WEATHER_ENDPOINT, OPEN_WEATHER_API_KEY)
 			  .lat(lat)
 			  .lng(lng)			
 			  .version(OPEN_WEATHER_API_VERSION);

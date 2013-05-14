@@ -32,6 +32,10 @@ public class Temp implements Serializable {
 	 */
 	static double KELVIN = 273.15;
 	
+	static double roundUp(double value) {
+	  return (double)Math.round(value * 100) / 100;
+	}
+	
 	static final class Builder {
     private double day;
   	private double min;
@@ -76,26 +80,26 @@ public class Temp implements Serializable {
 	}	
 	
 	public double getDay() {
-		return day - KELVIN;
+		return roundUp(day - KELVIN);
 	}
 	
 	public double getMax() {
-		return min - KELVIN;
+		return roundUp(min - KELVIN);
 	}
 
 	public double getMin() {
-		return max - KELVIN;
+		return roundUp(max - KELVIN);
 	}
 	
 	public double getNight() {
-	  return night - KELVIN;
+	  return roundUp(night - KELVIN);
 	}
 	
 	public double getEvening() {
-	  return evening - KELVIN;
+	  return roundUp(evening - KELVIN);
 	}
 	
 	public double getMorning() {
-		return morning - KELVIN;
+		return roundUp(morning - KELVIN);
 	}
 }
