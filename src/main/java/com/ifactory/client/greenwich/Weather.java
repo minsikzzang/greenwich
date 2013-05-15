@@ -28,7 +28,7 @@ public class Weather implements Serializable {
 	
 	static final class Builder {
 	/**
-	Thunderstorm
+	  Thunderstorm
     ID	Meaning	Icon
     200	 thunderstorm with light rain	 [[file:11d.png]]
     201	 thunderstorm with rain	 [[file:11d.png]]

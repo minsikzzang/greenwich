@@ -84,11 +84,11 @@ public class Temp implements Serializable {
 	}
 	
 	public double getMax() {
-		return roundUp(min - KELVIN);
+		return roundUp(max - KELVIN);
 	}
 
 	public double getMin() {
-		return roundUp(max - KELVIN);
+		return roundUp(min - KELVIN);
 	}
 	
 	public double getNight() {
