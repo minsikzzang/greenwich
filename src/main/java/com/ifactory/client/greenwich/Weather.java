@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 iFactory Ltd.
+ * Copyright 2013 iFactory Lab Ltd.
  * 
  * Min Kim (minsikzzang@gmail.com)
  *
